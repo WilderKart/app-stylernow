@@ -1,8 +1,41 @@
 @import "tailwindcss";
 
+@theme {
+  --color-gold: #D4AF37;
+  --color-gold-light: #F3D065;
+  --color-pure-black: #000000;
+  --color-off-black: #121212;
+  --color-gray-text: #A0A0A0;
+
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
 @layer base {
   body {
-    @apply bg-gray-100 text-gray-900;
+    @apply bg-pure-black text-white antialiased;
   }
 }
 
@@ -13,8 +46,8 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background-color: #f3f4f6;
-  /* Outer background */
+  background-color: #000000;
+  /* Pure Black outer background */
 }
 
 /* Scrollbar hiding for cleaner mobile look */

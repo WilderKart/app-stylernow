@@ -16,26 +16,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className={`${inter.className} min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300`}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function() {
-                  try {
-                    var localStored = localStorage.getItem('theme');
-                    if (localStored === 'dark' || (!localStored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                      document.documentElement.classList.add('dark');
-                    }
-                  } catch (e) {}
-                })()`
-          }}
-        />
-        <div className="flex justify-center min-h-screen">
-          <main className="w-full max-w-[414px] min-h-screen bg-white dark:bg-gray-900 shadow-2xl relative flex flex-col">
+    <html lang="es" className="dark">
+      <body className={`${inter.className} min-h-screen bg-pure-black text-gray-100 antialiased`}>
+        {/* Force dark class on html, remove script if we want permanent dark mode, 
+            but for now hardcoding className='dark' on html is safest strictly for this phase */}
+
+        <div className="flex justify-center min-h-screen bg-black"> {/* Outer wrapper black */}
+          <main className="w-full max-w-[414px] min-h-screen bg-pure-black shadow-2xl relative flex flex-col border-x border-gray-900">
             {children}
-            <div className="absolute top-4 right-4 z-50 pointer-events-none">
-              <ThemeToggle />
-            </div>
+            {/* ThemeToggle removed to enforce Premium identity */}
           </main>
         </div>
       </body>
