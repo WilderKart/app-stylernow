@@ -13,7 +13,7 @@ const ownerSlides: OnboardingSlide[] = [
         description: "Toma el control total de tu barbería. Gestiona citas, staff y finanzas desde un solo lugar."
     },
     {
-        image: "/images/onboarding_business.png",
+        image: "/images/onboarding_business.jpeg",
         title: "Potencia tu",
         highlight: "equipo",
         description: "Organiza los horarios de tus barberos y optimiza la productividad de tu salón."

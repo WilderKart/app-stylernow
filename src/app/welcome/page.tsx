@@ -27,11 +27,12 @@ export default function WelcomePage() {
             <header className="mt-8 md:mt-12 mb-6 md:mb-10 flex flex-col items-center relative z-10 transition-all duration-500">
                 <div className="w-24 h-auto mb-4 md:w-32 lg:w-40">
                     <img
-                        src="/images/logo-gold.png"
+                        src="/images/sn-logo.png"
                         alt="StylerNow Logo"
                         className="w-full h-full object-contain"
                     />
                 </div>
+                {/* Removed text since logo contains text usually, or kept as requested? User said 'change logo to official sn-logo'. Assuming sn-logo has text built-in or is the icon. The design usually implies logo + text. Code below had STYLERNOW text. I will keep text for now unless logo has it. Re-reading user request: 'cambiar el logo por el oficail que tiene nombre sn-logo', didn't explicitly say remove text, but usually 'Lettermark' implies text. I will keep the STYLERNOW text for safety unless 'sn-logo.png' is full wordmark. I'll stick to just changing the src. */}
                 <h2 className="text-white text-xl md:text-2xl font-bold tracking-[0.2em] md:tracking-[0.3em]">
                     STYLERNOW
                 </h2>
@@ -49,7 +50,7 @@ export default function WelcomePage() {
                 <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10 items-center justify-center">
                     <IntentCard
                         title="Soy Cliente"
-                        imageSrc="/images/pantalla3.jpg"
+                        imageSrc="/images/pantalla1.jpeg"
                         active={selectedIntent === "client"}
                         onClick={() => setSelectedIntent("client")}
                     />
