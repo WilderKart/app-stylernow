@@ -76,7 +76,7 @@ export default function WelcomePage() {
                         }
           `}
                 >
-                    Continuar
+                    {selectedIntent === "owner" ? "Crear Barbería" : "Continuar"}
                 </button>
             </footer>
         </div>
