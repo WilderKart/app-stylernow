@@ -13,9 +13,12 @@ export default function WelcomePage() {
 
     const handleContinue = () => {
         if (!selectedIntent) return;
-        // We pass intent via URL for the next visual step (Onboarding), 
-        // but remember: URL is NOT authority. Backend will validate content on signup.
-        router.push(`/onboarding?intent=${selectedIntent}`);
+
+        if (selectedIntent === "owner") {
+            router.push('/create-barbershop');
+        } else {
+            router.push(`/onboarding?intent=${selectedIntent}`);
+        }
     };
 
     return (
