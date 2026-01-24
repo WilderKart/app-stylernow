@@ -7,19 +7,19 @@ import OnboardingCarousel, { OnboardingSlide } from "@/components/onboarding/Onb
 // Data Definitions (Simulated local source for Owner, could be fetched for Client)
 const ownerSlides: OnboardingSlide[] = [
     {
-        image: "/images/pantalla1.png",
+        image: "/images/onboarding_loyalty.jpg",
         title: "Gestiona tu negocio",
         highlight: "sin límites",
         description: "Toma el control total de tu barbería. Gestiona citas, staff y finanzas desde un solo lugar."
     },
     {
-        image: "/images/pantalla2.jpg",
+        image: "/images/onboarding_business.png",
         title: "Potencia tu",
         highlight: "equipo",
         description: "Organiza los horarios de tus barberos y optimiza la productividad de tu salón."
     },
     {
-        image: "/images/pantalla3.jpg",
+        image: "/images/onboarding_staff.jpg",
         title: "Fideliza a tus",
         highlight: "clientes",
         description: "Ofrece una experiencia de reserva premium que hará que tus clientes vuelvan siempre."
@@ -55,7 +55,7 @@ function OnboardingContent() {
     // Defaut to Client if no intent found (Safety fallback)
     const safeIntent = intent === "owner" ? "owner" : "client";
     const slides = safeIntent === "owner" ? ownerSlides : clientSlides;
-    const ctaText = safeIntent === "owner" ? "COMENZAR AHORA" : "RESERVAR AHORA";
+    const ctaText = safeIntent === "owner" ? "Comenzar" : "Reservar";
 
     const handleComplete = () => {
         // Pass intent to Auth, explicitly

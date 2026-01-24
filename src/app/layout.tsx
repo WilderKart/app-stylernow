@@ -22,7 +22,7 @@ export default function RootLayout({
             but for now hardcoding className='dark' on html is safest strictly for this phase */}
 
         <div className="flex justify-center min-h-screen bg-black"> {/* Outer wrapper black */}
-          <main className="w-full max-w-[414px] min-h-screen bg-pure-black shadow-2xl relative flex flex-col border-x border-gray-900">
+          <main className="w-full min-h-screen bg-pure-black shadow-2xl relative flex flex-col">
             {children}
             {/* ThemeToggle removed to enforce Premium identity */}
           </main>

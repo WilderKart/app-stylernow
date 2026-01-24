@@ -23,46 +23,59 @@ export default function WelcomePage() {
             {/* Background Ambience */}
             <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[30%] bg-gold/5 blur-[100px] rounded-full pointer-events-none" />
 
-            <header className="mt-8 mb-12 relative z-10">
-                <h1 className="text-3xl font-bold text-white mb-2">
-                    Bienvenido a <span className="text-gold">StylerNow</span>
-                </h1>
-                <p className="text-gray-text text-lg">
-                    ¿Cómo deseas ingresar hoy?
-                </p>
+            {/* Logo Section */}
+            <header className="mt-8 md:mt-12 mb-6 md:mb-10 flex flex-col items-center relative z-10 transition-all duration-500">
+                <div className="w-24 h-auto mb-4 md:w-32 lg:w-40">
+                    <img
+                        src="/images/logo-gold.png"
+                        alt="StylerNow Logo"
+                        className="w-full h-full object-contain"
+                    />
+                </div>
+                <h2 className="text-white text-xl md:text-2xl font-bold tracking-[0.2em] md:tracking-[0.3em]">
+                    STYLERNOW
+                </h2>
             </header>
 
-            <main className="flex-1 flex flex-col gap-4 relative z-10 w-full max-w-md mx-auto">
-                <IntentCard
-                    title="Soy Profesional"
-                    description="Soy dueño de un negocio y quiero gestionar mi agenda, staff y clientes."
-                    icon={<span className="text-2xl">💼</span>}
-                    active={selectedIntent === "owner"}
-                    onClick={() => setSelectedIntent("owner")}
-                />
+            <main className="flex-1 w-full max-w-md md:max-w-4xl lg:max-w-6xl mx-auto flex flex-col justify-center items-center relative z-10 px-4">
+                {/* Title inside Main to keep it close to cards */}
+                <div className="mb-8 md:mb-12 text-center w-full px-2">
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white uppercase tracking-widest bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent whitespace-nowrap">
+                        ELIGE TU PERFIL
+                    </h1>
+                </div>
 
-                <IntentCard
-                    title="Soy Cliente"
-                    description="Quiero reservar citas, descubrir barberías y cuidar mi estilo."
-                    icon={<span className="text-2xl">👤</span>}
-                    active={selectedIntent === "client"}
-                    onClick={() => setSelectedIntent("client")}
-                />
+                {/* Cards Container */}
+                <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10 items-center justify-center">
+                    <IntentCard
+                        title="Soy Cliente"
+                        imageSrc="/images/pantalla3.jpg"
+                        active={selectedIntent === "client"}
+                        onClick={() => setSelectedIntent("client")}
+                    />
+
+                    <IntentCard
+                        title="Soy Profesional"
+                        imageSrc="/images/pantalla2.jpg"
+                        active={selectedIntent === "owner"}
+                        onClick={() => setSelectedIntent("owner")}
+                    />
+                </div>
             </main>
 
-            <footer className="mt-8 mb-6 relative z-10 w-full max-w-md mx-auto">
+            <footer className="mb-8 md:mb-12 relative z-10 w-full max-w-md mx-auto px-4 mt-8">
                 <button
                     onClick={handleContinue}
                     disabled={!selectedIntent}
                     className={`
-            w-full py-4 rounded-xl font-bold text-lg tracking-wide transition-all duration-300
+            w-full py-4 md:py-5 rounded-full font-bold text-lg md:text-xl tracking-wide transition-all duration-300 uppercase shadow-lg
             ${selectedIntent
-                            ? "bg-gold text-pure-black shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:bg-gold-light transform hover:-translate-y-1"
+                            ? "bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95"
                             : "bg-gray-800 text-gray-500 cursor-not-allowed"
                         }
           `}
                 >
-                    CONTINUAR
+                    Continuar
                 </button>
             </footer>
         </div>
