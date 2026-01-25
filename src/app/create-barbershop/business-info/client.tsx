@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { saveBusinessInfo } from "../actions";
 
 export default function BusinessInfoClient({ initialData }: { initialData?: any }) {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: initialData?.name || "",
         commercial_name: initialData?.commercial_name || "",
         business_type: initialData?.business_type || "NATURAL",
         document_number: initialData?.document_number || "",
+        city: initialData?.city || "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -33,7 +36,7 @@ export default function BusinessInfoClient({ initialData }: { initialData?: any 
             if (result?.error) {
                 throw new Error(result.error);
             }
-            // Redirect handled by action
+            router.push('/create-barbershop/location-contact');
         } catch (err: any) {
             setError(err.message || "Error al guardar información.");
             setLoading(false);
@@ -79,6 +82,18 @@ export default function BusinessInfoClient({ initialData }: { initialData?: any 
                         onChange={handleChange}
                         placeholder="Ej: Barbería El Rey"
                         className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-white ml-1">Ciudad</label>
+                    <input
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="Ej: Bogotá, Medellín..."
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        required
                     />
                 </div>
 
