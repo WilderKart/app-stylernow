@@ -18,7 +18,8 @@ const businessInfoSchema = z.object({
     commercial_name: z.string().optional(),
     business_type: z.enum(['BARBERSHOP', 'SALON', 'SPA', 'STUDIO', 'NATURAL', 'JURIDICA']),
     document_number: z.string().min(5, "Documento requerido"),
-    city: z.string().min(3, "Ciudad requerida")
+    city: z.string().min(3, "Ciudad requerida"),
+    country: z.string().min(2, "País requerido")
 }).strict();
 
 // Paso 2: Location

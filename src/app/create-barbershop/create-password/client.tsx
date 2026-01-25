@@ -27,7 +27,8 @@ export default function CreatePasswordClient() {
             if (result?.error) {
                 throw new Error(result.error);
             }
-            // Redirect handled by action
+            // Success - Redirect to next wizard step
+            window.location.href = "/create-barbershop/business-info";
         } catch (err: any) {
             setError(err.message || "Error al actualizar contraseña.");
             setLoading(false);

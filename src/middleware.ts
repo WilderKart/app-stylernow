@@ -61,6 +61,12 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
 
+    // 2. Wizard Intro Redirect
+    // Forces users hitting the root wizard path to see the cinematic intro first
+    if (request.nextUrl.pathname === '/create-barbershop' || request.nextUrl.pathname === '/create-barbershop/') {
+        return NextResponse.redirect(new URL('/create-barbershop/intro', request.url))
+    }
+
     // 2. Suspension Check (Only for Barberia Owner Routes)
     if (user && request.nextUrl.pathname.startsWith('/barberia')) {
         // Check Subscription Status

@@ -25,7 +25,7 @@ export default async function CreatePasswordPage() {
             redirect(`/create-barbershop/verify-whatsapp?phone=${encodeURIComponent(phone)}`);
         }
         if (profile?.status === "ACCOUNT_ACTIVE") {
-            redirect("/welcome");
+            redirect("/create-barbershop/business-info");
         }
 
         // Fallback
