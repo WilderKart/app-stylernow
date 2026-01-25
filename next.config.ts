@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'mnkweisggxelscoqvwnd.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   reactCompiler: true,

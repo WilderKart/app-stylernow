@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { uploadDocument, submitForReview } from "../actions";
-import { FileText, CreditCard, Store, Camera, Upload, Check, ChevronLeft } from "lucide-react";
+import { FileText, CreditCard, Store, Camera, Upload, Check, ChevronLeft, Shield, Lock, UserCheck, X } from "lucide-react";
 import CameraCapture from "@/components/ui/CameraCapture";
 
 const DOC_CONFIG = {
@@ -32,6 +32,8 @@ export default function DocumentsClient({
     );
     const [loading, setLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
+    const [showPolicyModal, setShowPolicyModal] = useState(false);
 
     // Camera State
     const [cameraState, setCameraState] = useState<{
@@ -147,9 +149,14 @@ export default function DocumentsClient({
                         </div>
 
                         {/* Actions */}
-                        <div className="mt-2">
-                            {!uploadedDocs[doc.key] ? (
-                                <div className="flex gap-3">
+                        <div className="mt-2 min-h-[60px] flex items-center justify-center">
+                            {loading === doc.key ? (
+                                <div className="flex flex-col items-center gap-2 animate-fade-in">
+                                    <div className="w-6 h-6 rounded-full border-[2px] border-[#333] border-t-[#FF8A00] animate-spin" />
+                                    <span className="text-[11px] text-gray-500 font-medium">Validando documento...</span>
+                                </div>
+                            ) : !uploadedDocs[doc.key] ? (
+                                <div className="flex gap-3 w-full animate-fade-in">
                                     <label className="flex-1 cursor-pointer bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
                                         <Upload size={16} />
                                         Subir
@@ -175,7 +182,10 @@ export default function DocumentsClient({
                                     )}
                                 </div>
                             ) : (
-                                <button className="w-full py-2.5 text-xs text-gray-500 hover:text-white transition-colors border-t border-gray-800/50 mt-2 flex items-center justify-center gap-1 group/edit">
+                                <button
+                                    onClick={() => setUploadedDocs(prev => ({ ...prev, [doc.key]: false }))}
+                                    className="w-full py-2.5 text-xs text-gray-500 hover:text-white transition-colors border-t border-gray-800/50 mt-2 flex items-center justify-center gap-1 group/edit animate-fade-in"
+                                >
                                     <span>Editar</span>
                                 </button>
                             )}
@@ -193,6 +203,96 @@ export default function DocumentsClient({
                 </div>
             )}
 
+
+            {/* Checkbox Legal - Replaces old static text */}
+            <div className="max-w-4xl mx-auto mb-8 px-6 flex justify-center animate-fade-in">
+                <label className="flex items-center gap-3 cursor-pointer group p-2">
+                    <div className={`
+                        w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-300
+                        ${isPolicyAccepted
+                            ? 'bg-[#FF8A00] border-[#FF8A00] shadow-[0_0_10px_rgba(255,138,0,0.3)]'
+                            : 'border-gray-600 group-hover:border-gray-400 bg-transparent'}
+                    `}>
+                        <input
+                            type="checkbox"
+                            className="hidden"
+                            checked={isPolicyAccepted}
+                            onChange={(e) => setIsPolicyAccepted(e.target.checked)}
+                        />
+                        {isPolicyAccepted && <Check size={14} strokeWidth={4} className="text-white" />}
+                    </div>
+                    <span className="text-xs text-gray-400 select-none">
+                        Certifico que esta información es real y acepto las{' '}
+                        <span
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setShowPolicyModal(true);
+                            }}
+                            className="text-[#FF8A00] font-bold hover:underline cursor-pointer"
+                        >
+                            Políticas de Seguridad.
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            {/* Policy Modal */}
+            {showPolicyModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-[#1A1A1A] border border-gray-800 rounded-2xl w-full max-w-md p-6 relative shadow-2xl shadow-black/50">
+                        <button
+                            onClick={() => setShowPolicyModal(false)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <div className="text-center mb-6">
+                            <div className="w-12 h-12 bg-[#FF8A00]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#FF8A00]/20">
+                                <Shield className="text-[#FF8A00]" size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-1">
+                                Seguridad y Confianza StylerNow 🛡️
+                            </h3>
+                        </div>
+
+                        <div className="space-y-6 text-sm text-gray-300 mb-8">
+                            <div className="flex gap-3 text-left">
+                                <div className="mt-1"><UserCheck size={18} className="text-[#FF8A00]" /></div>
+                                <div>
+                                    <strong className="block text-white mb-1">Tu identidad, protegida.</strong>
+                                    <p className="text-gray-400 text-xs leading-relaxed">Para mantener nuestra comunidad exclusiva y libre de fraudes, necesitamos validar que eres un profesional real.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 text-left">
+                                <div className="mt-1"><Lock size={18} className="text-[#FF8A00]" /></div>
+                                <div>
+                                    <strong className="block text-white mb-1">Encriptación Total</strong>
+                                    <p className="text-gray-400 text-xs leading-relaxed">Tus documentos viajan encriptados y nadie ajeno al equipo de validación tiene acceso a ellos.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 text-left">
+                                <div className="mt-1"><Shield size={18} className="text-[#FF8A00]" /></div>
+                                <div>
+                                    <strong className="block text-white mb-1">Compromiso de Honor</strong>
+                                    <p className="text-gray-400 text-xs leading-relaxed">Al activar tu cuenta, declaras que los documentos son legítimos y te pertenecen. El uso de datos falsos implicará la suspensión permanente.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => setShowPolicyModal(false)}
+                            className="w-full bg-[#FF8A00] hover:bg-[#FF9F2A] text-black font-bold py-3.5 rounded-xl transition-all active:scale-95"
+                        >
+                            Entendido y Cerrar
+                        </button>
+                    </div>
+                </div>
+            )}
+
+
             <div className="flex items-center justify-between w-full max-w-4xl mt-auto md:mt-0 gap-6">
                 <button
                     type="button"
@@ -205,8 +305,8 @@ export default function DocumentsClient({
 
                 <button
                     onClick={handleFinalSubmit}
-                    disabled={!allUploaded || loading !== null}
-                    className="flex-1 md:flex-none md:w-80 bg-[#FF8A00] text-black py-3 md:py-3.5 rounded-full font-bold text-base md:text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10 flex justify-center items-center gap-2 active:scale-95"
+                    disabled={!allUploaded || loading !== null || !isPolicyAccepted}
+                    className="flex-1 md:flex-none md:w-80 bg-[#FF8A00] text-black py-3 md:py-3.5 rounded-full font-bold text-base md:text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10 flex justify-center items-center gap-2 active:scale-95"
                 >
                     {loading === 'FINAL' ? "Enviando..." : "Enviar a Revisión"}
                 </button>
