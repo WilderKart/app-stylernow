@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import IntentCard from "@/components/onboarding/IntentCard";
 import { Suspense } from "react";
+import { ShieldCheck } from "lucide-react";
 
 // Safe intent types for internal logic
 type SignupIntent = "owner" | "client" | null;
@@ -16,21 +17,52 @@ function WelcomeContent() {
 
     if (status === 'review') {
         return (
-            <div className="min-h-screen bg-pure-black flex flex-col items-center justify-center p-6 text-center animate-fade-in relative overflow-hidden">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[40%] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="h-screen w-full bg-black flex flex-col items-center justify-between p-6 overflow-hidden relative">
+                {/* Background Spotlights */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] bg-[radial-gradient(circle,rgba(255,138,0,0.3)_0%,rgba(0,0,0,0)_70%)] pointer-events-none" />
 
-                <div className="w-24 h-24 bg-[#FF8A00]/10 rounded-full flex items-center justify-center mb-6 border border-[#FF8A00]/20">
-                    <span className="text-4xl">🚀</span>
+                {/* 1. Header with Logo */}
+                <div className="w-full flex justify-center pt-10 md:pt-14 relative z-10 mb-8 md:mb-12">
+                    <div className="w-[50%] max-w-[240px] md:max-w-[280px]">
+                        <img
+                            src="/images/sn-logo.png"
+                            alt="StylerNow"
+                            className="w-full h-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                        />
+                    </div>
                 </div>
-                <h1 className="text-3xl font-bold text-white mb-4">¡Solicitud Recibida!</h1>
-                <p className="text-[#A0A0A0] max-w-md leading-relaxed mb-8">
-                    Hemos recibido tus documentos. Nuestro equipo verificará tu información en las próximas 24 horas.
-                    <br /><br />
-                    Te notificaremos por WhatsApp cuando tu barbería esté activa.
-                </p>
-                <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl w-full max-w-sm">
-                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Estado Actual</p>
-                    <p className="text-[#FF8A00] font-bold">En Revisión (Pending)</p>
+
+                {/* 2. Main Content - Vertically centered */}
+                <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full max-w-md mx-auto text-center">
+                    {/* Icon */}
+                    <div className="mb-8 relative">
+                        <div className="absolute inset-0 bg-[#FF8A00]/20 blur-2xl rounded-full animate-pulse" />
+                        <ShieldCheck
+                            size={80}
+                            className="text-[#FF8A00] relative z-10 animate-[pulse_3s_ease-in-out_infinite]"
+                            strokeWidth={1}
+                        />
+                    </div>
+
+                    {/* Typography */}
+                    <h1 className="text-3xl font-bold text-white mb-4 tracking-tight">
+                        Documentación Enviada
+                    </h1>
+                    <p className="text-[#888888] text-sm leading-relaxed px-4">
+                        Tu solicitud ha entrado en nuestra cola prioritaria. Validaremos tus credenciales en breve.
+                    </p>
+                </div>
+
+                {/* 3. Status Card */}
+                <div className="w-full max-w-[320px] mb-8 md:mb-12 relative z-10">
+                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col items-center gap-1 shadow-2xl">
+                        <span className="text-[10px] text-gray-500 font-medium tracking-[0.2em] uppercase">
+                            Estatus
+                        </span>
+                        <span className="text-[#FF8A00] font-bold text-sm tracking-widest uppercase glow-text">
+                            En Revisión
+                        </span>
+                    </div>
                 </div>
             </div>
         )
