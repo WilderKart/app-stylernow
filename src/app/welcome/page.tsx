@@ -54,14 +54,25 @@ function WelcomeContent() {
                 </div>
 
                 {/* 3. Status Card */}
-                <div className="w-full max-w-[320px] mb-8 md:mb-12 relative z-10">
-                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col items-center gap-1 shadow-2xl">
+                <div className="w-full max-w-[320px] mb-8 md:mb-12 relative z-10 flex flex-col items-center gap-6">
+                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col items-center gap-1 shadow-2xl w-full">
                         <span className="text-[10px] text-gray-500 font-medium tracking-[0.2em] uppercase">
                             Estatus
                         </span>
                         <span className="text-[#FF8A00] font-bold text-sm tracking-widest uppercase glow-text">
                             En Revisión
                         </span>
+                    </div>
+
+                    {/* Ghost Link - Progressive Onboarding Entry */}
+                    <div className="animate-[fadeIn_1s_ease-in-out_3s_forwards] opacity-0">
+                        <button
+                            onClick={() => router.push('/dashboard')}
+                            className="text-gray-500 text-xs hover:text-[#FF8A00] transition-colors flex items-center gap-1 group"
+                        >
+                            Configurar mi barbería mientras espero
+                            <span className="group-hover:translate-x-1 transition-transform">-&gt;</span>
+                        </button>
                     </div>
                 </div>
             </div>

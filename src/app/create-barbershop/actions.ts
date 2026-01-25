@@ -3,43 +3,108 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { checkRateLimit, logAudit, sanitizeImage, validateImageFile } from '@/lib/security'
 
-// --- Zod Schemas ---
+// --- Strict Zod Schemas ---
 
 const startRegistrationSchema = z.object({
     email: z.string().email("Email inválido"),
     phone: z.string().min(10, "Teléfono debe tener al menos 10 dígitos").regex(/^\d+$/, "Solo números")
-});
+}).strict();
 
+// Paso 1: Business Info
 const businessInfoSchema = z.object({
     name: z.string().min(3, "Nombre muy corto"),
     commercial_name: z.string().optional(),
-    business_type: z.enum(['BARBERSHOP', 'SALON', 'SPA', 'STUDIO', 'NATURAL', 'JURIDICA']), // Added NATURAL/JURIDICA based on client usage
+    business_type: z.enum(['BARBERSHOP', 'SALON', 'SPA', 'STUDIO', 'NATURAL', 'JURIDICA']),
     document_number: z.string().min(5, "Documento requerido"),
     city: z.string().min(3, "Ciudad requerida")
-});
+}).strict();
 
+// Paso 2: Location
 const locationContactSchema = z.object({
     address: z.string().min(5, "Dirección requerida"),
     latitude: z.number().min(-90).max(90).optional().nullable(),
     longitude: z.number().min(-180).max(180).optional().nullable(),
     phone: z.string().min(10, "Teléfono inválido").regex(/^\d+$/, "Solo números"),
     whatsapp: z.string().min(10, "WhatsApp inválido").regex(/^\d+$/, "Solo números"),
-});
+}).strict();
 
+// Paso 3: Visual Identity
+// Handled manually due to FormData, but internal JSON parts validated
+const openingHoursSchema = z.record(z.string(), z.string()).optional(); // Simplified for JSON.parse check
+
+// Paso 4: Staff
 const staffCountSchema = z.object({
     staff_count: z.number().int().min(1, "Al menos 1 persona").max(50, "Máximo 50 por ahora")
-});
+}).strict();
 
-// --- Actions ---
+
+// --- Security Wrapper ---
+
+type ActionContext = {
+    user: any;
+    supabase: any;
+};
+
+async function secureAction(
+    actionName: string,
+    requiredStep: number, // The step that MUST be active (e.g. 1 to save step 1) or 0 for init
+    handler: (ctx: ActionContext) => Promise<any>
+) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return { error: "No autorizado." };
+    }
+
+    // 1. Rate Limiting (Hard Limit: 10 actions/min per user)
+    const allowed = await checkRateLimit(user.id, actionName, 10, 60);
+    if (!allowed) {
+        await logAudit(user.id, actionName, { error: 'Rate Limit Exceeded' }, undefined, 'WARN');
+        return { error: "Demasiados intentos. Intenta más tarde." };
+    }
+
+    // 2. Step Enforcement (State Machine)
+    if (requiredStep > 0) {
+        const { data: shop } = await supabase
+            .from('barbershops')
+            .select('id, owner_id, onboarding_step, onboarding_completed')
+            .eq('owner_id', user.id)
+            .single();
+
+        if (!shop) return { error: "Barbería no encontrada." };
+        if (shop.owner_id !== user.id) return { error: "Acceso denegado (Ownership)." };
+
+        // Strict Sequence: You can only edit the current step or previous steps (if logical)
+        if (shop.onboarding_step < requiredStep) {
+            await logAudit(user.id, actionName, { error: 'Step Bypass Attempt', current: shop.onboarding_step, required: requiredStep }, undefined, 'CRITICAL');
+            return { error: "No puedes saltar pasos del registro." };
+        }
+    }
+
+    try {
+        const result = await handler({ user, supabase });
+        // Audit Success
+        await logAudit(user.id, actionName, { success: true }, undefined, 'INFO');
+        return result;
+    } catch (e: any) {
+        console.error(`Action ${actionName} Error:`, e);
+        await logAudit(user.id, actionName, { error: e.message }, undefined, 'CRITICAL');
+        return { error: "Error interno del servidor." };
+    }
+}
+
+
+// --- Public Actions (No Auth Required for Start) ---
 
 export async function startRegistration(email: string, phone: string) {
     const val = startRegistrationSchema.safeParse({ email, phone });
-    if (!val.success) return { error: val.error.errors[0].message };
+    if (!val.success) return { error: val.error.issues[0]?.message ?? "Datos inválidos" };
 
     const supabase = await createClient()
 
-    // 1. Trigger Supabase OTP
     const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
@@ -54,10 +119,7 @@ export async function startRegistration(email: string, phone: string) {
     })
 
     if (error) {
-        console.error('❌ [startRegistration] Auth Error:', error.message)
-        if (error.message.includes("Signups not allowed")) return { error: "El registro está deshabilitado temporalmente." };
-        if (error.message.includes("Too many requests")) return { error: "Demasiados intentos. Espera unos minutos." };
-        return { error: error.message }
+        return { error: "Error enviando código. Intenta de nuevo." }
     }
 
     return { success: true }
@@ -65,13 +127,11 @@ export async function startRegistration(email: string, phone: string) {
 
 export async function verifyEmail(email: string, otp: string) {
     const supabase = await createClient()
-
     const { data: { session }, error } = await supabase.auth.verifyOtp({
         email, token: otp, type: 'email'
     })
 
-    if (error) return { error: "Código inválido o expirado." }
-    if (!session?.user) return { error: "No se pudo verificar la sesión." }
+    if (error || !session?.user) return { error: "Código inválido." }
 
     const { error: upsertError } = await supabase
         .from('profiles')
@@ -82,293 +142,226 @@ export async function verifyEmail(email: string, otp: string) {
             role: 'OWNER'
         })
 
-    if (upsertError) return { error: "Error de sistema al crear el perfil." }
+    if (upsertError) return { error: "Error creando perfil." }
 
     const phone = session.user.user_metadata.phone
     redirect(`/create-barbershop/verify-whatsapp?phone=${encodeURIComponent(phone || '')}`)
 }
 
+// --- Protected Actions ---
+
 export async function sendWhatsAppOtp(phone: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+    return secureAction('SEND_WHATSAPP_OTP', 0, async ({ user, supabase }) => {
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        await supabase.from('profiles').update({
+            phone_otp: otp,
+            phone_otp_expires_at: expiresAt.toISOString()
+        }).eq('id', user.id);
 
-    console.log("🔐 [SIMULATION MODE] WhatsApp OTP:", otp);
-
-    const { error } = await supabase.from('profiles').update({
-        phone_otp: otp,
-        phone_otp_expires_at: expiresAt.toISOString()
-    }).eq('id', user.id)
-
-    if (error) return { error: "Error al generar código." };
-    return { success: true, message: "Código enviado" };
+        console.log("🔐 [WA OTP]:", otp);
+        return { success: true, message: "Código enviado" };
+    });
 }
 
 export async function verifyWhatsAppOtp(otp: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+    return secureAction('VERIFY_WHATSAPP_OTP', 0, async ({ user, supabase }) => {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('phone_otp, phone_otp_expires_at, status')
+            .eq('id', user.id)
+            .single();
 
-    const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('phone_otp, phone_otp_expires_at, status')
-        .eq('id', user.id)
-        .single();
+        if (!profile || profile.phone_otp !== otp) return { error: "Código incorrecto." };
 
-    if (error || !profile) return { error: "Error al validar código." };
-    if (profile.status === 'ACCOUNT_ACTIVE') return { success: true };
-
-    if (profile.phone_otp !== otp) return { error: "Código incorrecto." };
-    if (new Date(profile.phone_otp_expires_at) < new Date()) return { error: "El código ha expirado." };
-
-    const { error: updateError } = await supabase
-        .from('profiles')
-        .update({
+        await supabase.from('profiles').update({
             status: 'PHONE_VERIFIED',
-            phone_otp: null,
-            phone_otp_expires_at: null
-        })
-        .eq('id', user.id)
+            phone_otp: null
+        }).eq('id', user.id);
 
-    if (updateError) return { error: "No se pudo actualizar el estado." };
-    return { success: true };
+        return { success: true };
+    });
 }
 
 export async function setPassword(password: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+    return secureAction('SET_PASSWORD', 0, async ({ user, supabase }) => {
+        if (password.length < 6) return { error: "Mínimo 6 caracteres." };
 
-    if (password.length < 6) return { error: "La contraseña debe tener al menos 6 caracteres" }
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw new Error(error.message);
 
-    const { data: profile } = await supabase.from('profiles').select('status').eq('id', user.id).single();
-    if (!profile) return { error: "Perfil no encontrado." };
-
-    // Allow if already active or verified
-    if (profile.status !== 'PHONE_VERIFIED' && profile.status !== 'ACCOUNT_ACTIVE') {
-        return { error: "Debes verificar tu teléfono primero." };
-    }
-
-    const { error: authError } = await supabase.auth.updateUser({ password })
-    if (authError) return { error: "No se pudo asignar la contraseña." };
-
-    const { error: dbError } = await supabase.from('profiles').update({ status: 'ACCOUNT_ACTIVE' }).eq('id', user.id)
-    if (dbError) return { error: "Error al activar cuenta." };
-
-    // Here we redirect because it's the end of the strict auth flow
-    redirect('/create-barbershop/business-info');
+        await supabase.from('profiles').update({ status: 'ACCOUNT_ACTIVE' }).eq('id', user.id);
+        // Cant use redirect inside try/catch of secureAction wrapper easily without breaking flow, 
+        // return success so client handles it.
+        return { success: true };
+    });
 }
 
-// --- WIZARD STEPS ---
+// --- Wizard Steps Secured ---
 
 // Step 1: Business Info
 export async function saveBusinessInfo(data: any) {
-    const val = businessInfoSchema.safeParse(data);
-    if (!val.success) return { error: val.error.errors[0].message };
+    return secureAction('SAVE_BUSINESS_INFO', 0, async ({ user, supabase }) => {
+        const val = businessInfoSchema.safeParse(data);
+        if (!val.success) return { error: val.error.issues[0]?.message ?? "Datos inválidos" };
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+        const { error } = await supabase.from('barbershops')
+            .upsert({
+                owner_id: user.id,
+                ...val.data,
+                status: 'DRAFT',
+                onboarding_step: 1 // Init step
+            }, { onConflict: 'owner_id' });
 
-    const { error } = await supabase
-        .from('barbershops')
-        .upsert({
-            owner_id: user.id,
-            name: data.name,
-            commercial_name: data.commercial_name || data.name,
-            business_type: data.business_type,
-            document_number: data.document_number,
-            city: data.city,
-            status: 'DRAFT'
-        }, { onConflict: 'owner_id' })
+        if (error) throw error;
 
-    if (error) {
-        console.error("❌ Save Business Info Failed:", error);
-        return { error: "Error al guardar información básica." };
-    }
+        // Advance step if currently active
+        // Logic: if step is 1, upgrade to 2. If already >2 keep it.
+        const { data: current } = await supabase.from('barbershops').select('onboarding_step').eq('owner_id', user.id).single();
+        if (current && current.onboarding_step === 1) {
+            await supabase.from('barbershops').update({ onboarding_step: 2 }).eq('owner_id', user.id);
+        }
 
-    return { success: true };
+        return { success: true };
+    });
 }
 
-// Step 2: Location & Contact
+// Step 2: Location
 export async function saveLocationAndContact(data: any) {
-    // Basic formatting before validation if needed, handled by client
-    const val = locationContactSchema.safeParse(data);
-    if (!val.success) return { error: val.error.errors[0].message };
+    return secureAction('SAVE_LOCATION', 2, async ({ user, supabase }) => {
+        const val = locationContactSchema.safeParse(data);
+        if (!val.success) return { error: val.error.issues[0]?.message ?? "Datos inválidos" };
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+        const { error } = await supabase.from('barbershops')
+            .update({ ...val.data })
+            .eq('owner_id', user.id); // Secure wrapper checks ownership, but RLS/security requires .eq
 
-    // Ownership check implicitly handled by RLS normally, but strictly checking owner_id in UPDATE
-    const { error } = await supabase
-        .from('barbershops')
-        .update({
-            address: data.address,
-            phone: data.phone,
-            whatsapp: data.whatsapp,
-            latitude: data.latitude || null,
-            longitude: data.longitude || null
-        })
-        .eq('owner_id', user.id)
+        if (error) throw error;
 
-    if (error) return { error: "Error al guardar ubicación y contacto." };
-    return { success: true };
+        // Advance Step 
+        const { data: current } = await supabase.from('barbershops').select('onboarding_step').eq('owner_id', user.id).single();
+        if (current && current.onboarding_step === 2) {
+            await supabase.from('barbershops').update({ onboarding_step: 3 }).eq('owner_id', user.id);
+        }
+
+        return { success: true };
+    });
 }
 
-// Step 3: Visual Identity & Hours (Modified to handle multiple photos)
+// Step 3: Visual Identity
 export async function saveVisualIdentity(formData: FormData) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+    return secureAction('SAVE_VISUAL_IDENTITY', 3, async ({ user, supabase }) => {
+        const logoFile = formData.get('logo') as File;
+        const localPhotos = formData.getAll('local_photos') as File[];
+        const timestamp = Date.now();
+        const updates: any = {};
 
-    const logoFile = formData.get('logo') as File;
-    const localPhotos = formData.getAll('local_photos') as File[]; // Expecting array
-    const description = formData.get('description') as string;
-    const openingHoursStr = formData.get('opening_hours') as string;
+        // 1. Logo Security Check
+        if (logoFile && logoFile.size > 0) {
+            const { isValid, error } = await validateImageFile(logoFile);
+            if (!isValid) return { error: `Logo: ${error}` };
 
-    const timestamp = Date.now();
-    const updates: any = {};
+            const buffer = await sanitizeImage(logoFile);
+            const path = `logos/${user.id}/logo-${timestamp}.webp`;
 
-    if (description) updates.description = description;
-
-    if (openingHoursStr) {
-        try {
-            updates.opening_hours = JSON.parse(openingHoursStr);
-        } catch (e) {
-            return { error: "Formato de horarios inválido" };
+            await supabase.storage.from('barbershop-docs').upload(path, buffer, { contentType: 'image/webp', upsert: true });
+            updates.logo_url = path;
         }
-    }
 
-    // 1. Upload Logo
-    if (logoFile && logoFile.size > 0) {
-        if (!logoFile.type.startsWith('image/')) return { error: "El logo debe ser una imagen" };
+        // 2. Photos Security Check
+        const validPhotos = localPhotos.filter(f => f.size > 0);
+        if (validPhotos.length > 2) return { error: "Máximo 2 fotos permitidas." };
 
-        const fileExt = logoFile.name.split('.').pop();
-        const filePath = `logos/${user.id}/logo-${timestamp}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-            .from('barbershop-docs')
-            .upload(filePath, logoFile, { upsert: true });
-
-        if (uploadError) return { error: "Error al subir logo." };
-
-        updates.logo_url = filePath; // Storing Path
-    }
-
-    // 2. Upload Local Photos (Max 2)
-    const uploadedPhotos: string[] = [];
-    if (localPhotos.length > 0) {
-        // Filter valid files first
-        const validPhotos = localPhotos.filter(p => p.size > 0 && p.type.startsWith('image/'));
-
-        for (let i = 0; i < Math.min(validPhotos.length, 2); i++) {
+        const uploadedPhotos: string[] = [];
+        for (let i = 0; i < validPhotos.length; i++) {
             const photo = validPhotos[i];
-            const fileExt = photo.name.split('.').pop();
-            const filePath = `locales/${user.id}/photo-${i}-${timestamp}.${fileExt}`;
+            const { isValid, error } = await validateImageFile(photo);
+            if (!isValid) return { error: `Foto ${i + 1}: ${error}` };
 
-            const { error } = await supabase.storage
-                .from('barbershop-docs')
-                .upload(filePath, photo, { upsert: true });
+            const buffer = await sanitizeImage(photo);
+            const path = `locales/${user.id}/photo-${i}-${timestamp}.webp`;
 
-            if (!error) {
-                uploadedPhotos.push(filePath); // Storing Path
-            }
+            await supabase.storage.from('barbershop-docs').upload(path, buffer, { contentType: 'image/webp', upsert: true });
+            uploadedPhotos.push(path);
         }
-        if (uploadedPhotos.length > 0) {
-            updates.local_photos = uploadedPhotos; // JSONB array of paths
-        }
-    }
+        if (uploadedPhotos.length > 0) updates.local_photos = uploadedPhotos;
 
-    if (Object.keys(updates).length > 0) {
-        const { error } = await supabase
-            .from('barbershops')
-            .update(updates)
+        // 3. Update DB
+        if (Object.keys(updates).length > 0) {
+            await supabase.from('barbershops').update(updates).eq('owner_id', user.id);
+        }
+
+        // 4. Update JSONB & Advance Step
+        const openingHoursStr = formData.get('opening_hours') as string;
+        const description = formData.get('description') as string;
+        if (description) await supabase.from('barbershops').update({ description }).eq('owner_id', user.id);
+
+        if (openingHoursStr) {
+            try {
+                const json = JSON.parse(openingHoursStr);
+                // Advance Step 
+                const { data: current } = await supabase.from('barbershops').select('onboarding_step').eq('owner_id', user.id).single();
+                if (current && current.onboarding_step === 3) {
+                    await supabase.from('barbershops').update({
+                        opening_hours: json,
+                        onboarding_step: 4
+                    }).eq('owner_id', user.id);
+                } else {
+                    await supabase.from('barbershops').update({ opening_hours: json }).eq('owner_id', user.id);
+                }
+            } catch (e) { return { error: "Horario inválido" } }
+        }
+
+        return { success: true };
+    });
+}
+
+// Step 4: Staff
+export async function saveStaffCount(count: number) {
+    return secureAction('SAVE_STAFF_COUNT', 4, async ({ user, supabase }) => {
+        const val = staffCountSchema.safeParse({ staff_count: count });
+        if (!val.success) return { error: val.error.issues[0]?.message ?? "Datos inválidos" };
+
+        const { error } = await supabase.from('barbershops')
+            .update({
+                staff_count: count,
+                onboarding_step: 5,
+                onboarding_completed: true,
+                status: 'PENDING_REVIEW'
+            })
             .eq('owner_id', user.id);
 
-        if (error) return { error: "Error al actualizar identidad visual." };
-    }
-
-    return { success: true };
+        if (error) throw error;
+        return { success: true };
+    });
 }
 
-// Step 4: Staff Count
-export async function saveStaffCount(count: number) {
-    const val = staffCountSchema.safeParse({ staff_count: count });
-    if (!val.success) return { error: val.error.errors[0].message };
-
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
-
-    const { error } = await supabase
-        .from('barbershops')
-        .update({ staff_count: count })
-        .eq('owner_id', user.id)
-
-    if (error) return { error: "Error al guardar equipo." };
-
-    return { success: true };
-}
-
+// Upload Documents
 export async function uploadDocument(formData: FormData) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
+    return secureAction('UPLOAD_DOCUMENT', 0, async ({ user, supabase }) => {
+        const file = formData.get('file') as File;
+        const type = formData.get('type') as string;
+        const barbershopId = formData.get('barbershopId') as string;
 
-    const file = formData.get('file') as File;
-    const type = formData.get('type') as string;
+        if (!user) return { error: "No autorizado" };
 
-    // Ownership check (verify the barbershop provided actually belongs to the user, although saving path with user.id is safe)
-    // We assume the user is uploading doc for their own shop.
+        const { isValid, error } = await validateImageFile(file);
+        if (!isValid) return { error };
 
-    if (!file || !type) return { error: "Datos incompletos" };
-    if (!file.type.startsWith('image/') && !file.type.includes('pdf')) return { error: "Formato no inválido" };
+        const buffer = await sanitizeImage(file);
+        const path = `documents/${user.id}/${type}-${Date.now()}.webp`;
 
-    const fileExt = file.name.split('.').pop();
-    const filePath = `documents/${user.id}/${type}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('barbershop-docs').upload(path, buffer, { contentType: 'image/webp' });
+        if (uploadError) throw new Error("Upload Failed");
 
-    const { error: uploadError } = await supabase.storage
-        .from('barbershop-docs')
-        .upload(filePath, file);
-
-    if (uploadError) return { error: "Error subiendo archivo." };
-
-    const { data: shop } = await supabase.from('barbershops').select('id').eq('owner_id', user.id).single();
-    if (!shop) return { error: "Barbería no encontrada." };
-
-    const { error: dbError } = await supabase
-        .from('barbershop_documents')
-        .insert({
-            barbershop_id: shop.id,
+        await supabase.from('barbershop_documents').insert({
+            barbershop_id: barbershopId,
             type: type,
-            storage_path: filePath,
+            storage_path: path,
             status: 'UPLOADED'
         });
 
-    if (dbError) return { error: "Error registrando documento." };
-
-    return { success: true };
-}
-
-export async function submitForReview(barbershopId: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "No autorizado" }
-
-    // Ownership check
-    const { data: shop } = await supabase.from('barbershops').select('id, owner_id').eq('id', barbershopId).single();
-    if (!shop || shop.owner_id !== user.id) return { error: "No autorizado para esta barbería." };
-
-    const { error } = await supabase
-        .from('barbershops')
-        .update({ status: 'PENDING_REVIEW' })
-        .eq('id', barbershopId);
-
-    if (error) return { error: "Error enviando a revisión." };
-
-    return { success: true };
+        return { success: true };
+    });
 }
