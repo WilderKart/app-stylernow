@@ -88,12 +88,11 @@ export default function LocationContactClient({ initialData }: { initialData?: a
                 layers: [{
                     id: 'osm-layer',
                     type: 'raster',
-                    source: 'osm',
-                    paint: { 'raster-saturation': -0.5 }
+                    source: 'osm'
                 }]
             },
             center: [formData.longitude, formData.latitude],
-            zoom: 13,
+            zoom: 15,
             attributionControl: false
         });
 
@@ -146,7 +145,7 @@ export default function LocationContactClient({ initialData }: { initialData?: a
 
                 // Animación de vuelo hacia la ubicación
                 if (map.current && marker.current) {
-                    map.current.flyTo({ center: [lon, lat], zoom: 16, essential: true });
+                    map.current.flyTo({ center: [lon, lat], zoom: 17, essential: true });
                     marker.current.setLngLat([lon, lat]);
                 }
             } else if (result.error) {
@@ -219,12 +218,11 @@ export default function LocationContactClient({ initialData }: { initialData?: a
                         required
                     />
 
-                    {/* Contenedor del Mapa (Modo Oscuro con Filtros CSS) */}
-                    <div className="w-full h-64 rounded-2xl overflow-hidden relative border border-white/10 mt-2 shadow-2xl group transition-all duration-500 hover:border-[#E5CB67]/30">
+                    {/* Contenedor del Mapa (Modo Claro Estándar) */}
+                    <div className="w-full h-64 rounded-2xl overflow-hidden relative border border-white/20 mt-2 shadow-2xl group transition-all duration-500 hover:border-[#E5CB67]/50">
                         <div
                             ref={mapContainer}
                             className="w-full h-full"
-                            style={{ filter: "invert(100%) hue-rotate(180deg) brightness(90%) grayscale(20%) contrast(85%)" }}
                         />
 
                         {/* Aviso flotante UX */}
