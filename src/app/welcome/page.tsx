@@ -1,15 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import IntentCard from "@/components/onboarding/IntentCard";
+import { Suspense } from "react";
 
 // Safe intent types for internal logic
 type SignupIntent = "owner" | "client" | null;
 
-export default function WelcomePage() {
+function WelcomeContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const status = searchParams.get('status');
     const [selectedIntent, setSelectedIntent] = useState<SignupIntent>(null);
+
+    if (status === 'review') {
+        return (
+            <div className="min-h-screen bg-pure-black flex flex-col items-center justify-center p-6 text-center animate-fade-in relative overflow-hidden">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[40%] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
+
+                <div className="w-24 h-24 bg-[#FF8A00]/10 rounded-full flex items-center justify-center mb-6 border border-[#FF8A00]/20">
+                    <span className="text-4xl">🚀</span>
+                </div>
+                <h1 className="text-3xl font-bold text-white mb-4">¡Solicitud Recibida!</h1>
+                <p className="text-[#A0A0A0] max-w-md leading-relaxed mb-8">
+                    Hemos recibido tus documentos. Nuestro equipo verificará tu información en las próximas 24 horas.
+                    <br /><br />
+                    Te notificaremos por WhatsApp cuando tu barbería esté activa.
+                </p>
+                <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl w-full max-w-sm">
+                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Estado Actual</p>
+                    <p className="text-[#FF8A00] font-bold">En Revisión (Pending)</p>
+                </div>
+            </div>
+        )
+    }
 
     const handleContinue = () => {
         if (!selectedIntent) return;
@@ -35,7 +60,6 @@ export default function WelcomePage() {
                         className="w-full h-full object-contain"
                     />
                 </div>
-                {/* Removed text since logo contains text usually, or kept as requested? User said 'change logo to official sn-logo'. Assuming sn-logo has text built-in or is the icon. The design usually implies logo + text. Code below had STYLERNOW text. I will keep text for now unless logo has it. Re-reading user request: 'cambiar el logo por el oficail que tiene nombre sn-logo', didn't explicitly say remove text, but usually 'Lettermark' implies text. I will keep the STYLERNOW text for safety unless 'sn-logo.png' is full wordmark. I'll stick to just changing the src. */}
                 <h2 className="text-white text-xl md:text-2xl font-bold tracking-[0.2em] md:tracking-[0.3em]">
                     STYLERNOW
                 </h2>
@@ -83,5 +107,13 @@ export default function WelcomePage() {
                 </button>
             </footer>
         </div>
+    );
+}
+
+export default function WelcomePage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+            <WelcomeContent />
+        </Suspense>
     );
 }

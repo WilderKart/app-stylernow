@@ -106,7 +106,6 @@ export default function CreateBarbershopCredentials() {
 
                 <div className="flex flex-col gap-4 mt-2">
                     <div className="flex items-center gap-2 justify-center text-[#A0A0A0] text-xs">
-                        <span>🔒</span>
                         <span className="text-center">Tus datos están protegidos. Nunca compartimos tu información.</span>
                     </div>
 

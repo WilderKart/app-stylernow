@@ -1,27 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { sendWhatsAppOtp, verifyWhatsAppOtp } from "../actions";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function WhatsAppVerificationClient({ phone }: { phone: string }) {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
+    const [sent, setSent] = useState(false);
+
+    // Send OTP on mount
+    useEffect(() => {
+        if (!sent) {
+            sendWhatsAppOtp(phone).then(res => {
+                if (res?.success) setSent(true);
+            });
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // TODO: Call verifyWhatsApp Action
-        // For now, visual mock as requested in Phase 1
-        setTimeout(() => {
+
+        try {
+            const res = await verifyWhatsAppOtp(otp);
+            if (res?.error) {
+                alert(res.error);
+                setLoading(false);
+            } else if (res?.success) {
+                // Success! Redirecting client-side to avoid "Error al verificar" alert
+                // caused by Server Action redirect throwing an error.
+                window.location.href = "/create-barbershop/create-password";
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error al verificar.");
             setLoading(false);
-            alert("Integración de WhatsApp Pendiente (Fase siguiente)");
-        }, 1500);
+        }
     };
 
     return (
         <div className="w-full max-w-sm md:max-w-md animate-fade-in flex flex-col items-center">
             {/* Logo */}
-            <div className="mb-6 relative w-20 h-20 md:w-24 md:h-24">
+            <div className="mb-8 relative w-32 h-32 md:w-40 md:h-40">
                 <Image
                     src="/images/sn-logo.png"
                     alt="StylerNow"
@@ -56,7 +77,6 @@ export default function WhatsAppVerificationClient({ phone }: { phone: string })
 
                 <div className="flex flex-col gap-4 mt-2">
                     <div className="flex items-center gap-2 justify-center text-[#A0A0A0] text-xs">
-                        <span>📱</span>
                         <span className="text-center">Usaremos este número para notificaciones de reservas.</span>
                     </div>
 
