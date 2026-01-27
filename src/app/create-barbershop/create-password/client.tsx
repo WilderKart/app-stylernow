@@ -65,7 +65,7 @@ export default function CreatePasswordClient() {
                         value={password}
                         onChange={(e) => setPasswordInput(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                 </div>
@@ -77,7 +77,7 @@ export default function CreatePasswordClient() {
                         value={confirm}
                         onChange={(e) => setConfirm(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                 </div>
@@ -91,14 +91,14 @@ export default function CreatePasswordClient() {
                 {/* Checkboxes Legales */}
                 {/* Legal Text (Clickwrap) */}
                 <p className="text-xs text-[#A0A0A0] text-center mb-4 leading-relaxed px-2">
-                    Al hacer clic aquí, aceptas los <a href="#" className="underline decoration-[#FF8A00]/50 hover:text-[#FF8A00]">Términos Comerciales de servicio de Stylernow</a>, y confirmas que has leído la <a href="#" className="underline decoration-[#FF8A00]/50 hover:text-[#FF8A00]">Política de privacidad para socios de Stylernow</a> para saber cómo se recopilan, se utilizan y se comparten tus datos.
+                    Al hacer clic aquí, aceptas los <a href="#" className="underline decoration-[#E5CB67]/50 hover:text-[#E5CB67]">Términos Comerciales de servicio de Stylernow</a>, y confirmas que has leído la <a href="#" className="underline decoration-[#E5CB67]/50 hover:text-[#E5CB67]">Política de privacidad para socios de Stylernow</a> para saber cómo se recopilan, se utilizan y se comparten tus datos.
                 </p>
 
                 <div className="flex flex-col gap-4 mt-2">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#FF8A00] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10"
+                        className="w-full bg-[#E5CB67] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#E5CB67]/10"
                     >
                         {loading ? "Crear cuenta" : "Finalizar registro"}
                     </button>

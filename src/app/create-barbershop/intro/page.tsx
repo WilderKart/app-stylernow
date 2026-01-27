@@ -25,7 +25,7 @@ export default function IntroPage() {
             {/* Content Content - Positioned absolute to ensure it sits on top of bg but respects layout */}
             <div className="relative z-10 w-full h-full flex flex-col justify-end pb-32 md:pb-40 animate-fade-in-up">
                 <div className="max-w-md mx-auto px-6 text-center">
-                    <span className="block text-[#FF8A00] text-xs font-bold tracking-[0.2em] uppercase mb-4 shadow-black drop-shadow-lg">
+                    <span className="block text-[#E5CB67] text-xs font-bold tracking-[0.2em] uppercase mb-4 shadow-black drop-shadow-lg">
                         Professional Business Profile
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-2 drop-shadow-2xl">
@@ -42,7 +42,7 @@ export default function IntroPage() {
             <button
                 type="button"
                 onClick={() => router.push('/create-barbershop/business-info')}
-                className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-16 h-16 rounded-full bg-[#FF8A00] shadow-lg hover:scale-105 transition-transform z-[100] cursor-pointer"
+                className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-16 h-16 rounded-full bg-[#E5CB67] shadow-lg hover:scale-105 transition-transform z-[100] cursor-pointer"
             >
                 <ArrowRight className="w-8 h-8 text-white" />
             </button>

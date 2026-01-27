@@ -51,7 +51,7 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
                 {/* Add New Card */}
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="h-64 border-2 border-dashed border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-4 text-gray-500 hover:text-[#FF8A00] hover:border-[#FF8A00] hover:bg-[#FF8A00]/5 transition-all group"
+                    className="h-64 border-2 border-dashed border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-4 text-gray-500 hover:text-[#E5CB67] hover:border-[#E5CB67] hover:bg-[#E5CB67]/5 transition-all group"
                 >
                     <div className="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Plus size={32} />
@@ -84,7 +84,7 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
                             )}
                         </div>
                         <h4 className="font-bold text-white text-lg">{member.full_name}</h4>
-                        <span className="text-[#FF8A00] text-xs font-medium uppercase tracking-wider mb-4">{member.role}</span>
+                        <span className="text-[#E5CB67] text-xs font-medium uppercase tracking-wider mb-4">{member.role}</span>
 
                         <div className="flex gap-3 w-full justify-center">
                             {member.phone && <div className="p-2 rounded-full bg-[#1A1A1A] text-gray-400"><Phone size={14} /></div>}
@@ -106,12 +106,12 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
                         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5">
                             {/* Avatar Upload */}
                             <div className="flex justify-center">
-                                <label className="w-24 h-24 rounded-full border border-gray-700 bg-[#0A0A0A] flex items-center justify-center cursor-pointer overflow-hidden hover:border-[#FF8A00] transition-colors relative group">
+                                <label className="w-24 h-24 rounded-full border border-gray-700 bg-[#0A0A0A] flex items-center justify-center cursor-pointer overflow-hidden hover:border-[#E5CB67] transition-colors relative group">
                                     <input type="file" name="avatar" accept="image/*" onChange={handleAvatarChange} className="hidden" />
                                     {avatarPreview ? (
                                         <Image src={avatarPreview} alt="Preview" fill className="object-cover" />
                                     ) : (
-                                        <div className="flex flex-col items-center text-gray-500 group-hover:text-[#FF8A00]">
+                                        <div className="flex flex-col items-center text-gray-500 group-hover:text-[#E5CB67]">
                                             <Upload size={20} />
                                             <span className="text-[10px] mt-1">Foto</span>
                                         </div>
@@ -121,12 +121,12 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
 
                             <div>
                                 <label className="text-xs text-gray-400 font-medium ml-1">Nombre Completo</label>
-                                <input name="full_name" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1" required />
+                                <input name="full_name" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1" required />
                             </div>
 
                             <div>
                                 <label className="text-xs text-gray-400 font-medium ml-1">Rol</label>
-                                <select name="role" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1">
+                                <select name="role" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1">
                                     <option value="BARBER">Barbero</option>
                                     <option value="STYLIST">Estilista</option>
                                     <option value="MANAGER">Gerente</option>
@@ -137,11 +137,11 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-xs text-gray-400 font-medium ml-1">Teléfono</label>
-                                    <input name="phone" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1" />
+                                    <input name="phone" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1" />
                                 </div>
                                 <div>
                                     <label className="text-xs text-gray-400 font-medium ml-1">Email</label>
-                                    <input name="email" type="email" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1" />
+                                    <input name="email" type="email" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1" />
                                 </div>
                             </div>
 
@@ -150,7 +150,7 @@ export default function StaffManager({ initialStaff }: { initialStaff: any[] }) 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="bg-[#FF8A00] text-black w-full py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
+                                className="bg-[#E5CB67] text-black w-full py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
                             >
                                 {loading && <Loader2 size={18} className="animate-spin" />}
                                 {loading ? "Agregando..." : "Invitar Miembro"}

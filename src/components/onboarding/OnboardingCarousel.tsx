@@ -80,7 +80,7 @@ export default function OnboardingCarousel({ slides, ctaText, onComplete, intent
                 {slides.map((_, idx) => (
                     <div
                         key={idx}
-                        className={`h-1 rounded-full transition-all duration-500 ${idx === currentIndex ? "w-8 bg-[#FF8A00]" : "w-1.5 bg-gray-600/50"
+                        className={`h-1 rounded-full transition-all duration-500 ${idx === currentIndex ? "w-8 bg-[#E5CB67]" : "w-1.5 bg-gray-600/50"
                             }`}
                     />
                 ))}
@@ -91,7 +91,7 @@ export default function OnboardingCarousel({ slides, ctaText, onComplete, intent
                 {/* Animated Text Container */}
                 <div key={currentIndex} className="animate-fade-in mb-8">
                     <h2 className="text-4xl font-bold text-white mb-3 leading-tight tracking-tight">
-                        {currentSlide.title} <span className="text-[#FF8A00] block">{currentSlide.highlight}</span>
+                        {currentSlide.title} <span className="text-[#E5CB67] block">{currentSlide.highlight}</span>
                     </h2>
                     <p className="text-gray-400 text-lg leading-relaxed max-w-[90%]">
                         {currentSlide.description}
@@ -110,12 +110,12 @@ export default function OnboardingCarousel({ slides, ctaText, onComplete, intent
                         ${showButton
                             ? "translate-y-0 opacity-100"
                             : "translate-y-8 opacity-0 pointer-events-none"}
-                        hover:text-[#FF8A00]
+                        hover:text-[#E5CB67]
                     `}
                 >
                     <span>{currentIndex === slides.length - 1 ? ctaText : "Continuar"}</span>
                     {/* Simple Chevron Icon */}
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-[#FF8A00]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-[#E5CB67]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
                 </button>

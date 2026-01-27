@@ -110,7 +110,7 @@ function UnifiedAuthForm() {
                         placeholder="ejemplo@correo.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-off-black border border-gray-800 rounded-xl p-3 md:p-5 text-sm md:text-lg text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-off-black border border-gray-800 rounded-xl p-3 md:p-5 text-sm md:text-lg text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                 </div>
@@ -124,7 +124,7 @@ function UnifiedAuthForm() {
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-off-black border border-gray-800 rounded-xl p-3 md:p-5 text-sm md:text-lg text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors pr-12"
+                            className="w-full bg-off-black border border-gray-800 rounded-xl p-3 md:p-5 text-sm md:text-lg text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors pr-12"
                             required
                         />
                         <button
@@ -149,7 +149,7 @@ function UnifiedAuthForm() {
                 {/* Forgot Password Link - Only show in Login */}
                 {!isRegister && (
                     <div className="flex justify-end">
-                        <Link href="/forgot-password" className="text-[#FF8A00] text-xs md:text-sm font-medium hover:underline">
+                        <Link href="/forgot-password" className="text-[#E5CB67] text-xs md:text-sm font-medium hover:underline">
                             ¿Olvidaste tu contraseña?
                         </Link>
                     </div>
@@ -164,7 +164,7 @@ function UnifiedAuthForm() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#FF8A00] text-pure-black py-3 md:py-5 rounded-xl font-bold text-base md:text-xl shadow-[0_4px_20px_rgba(255,138,0,0.3)] hover:bg-[#FF9F2A] transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed mt-1 md:mt-4"
+                    className="w-full bg-[#E5CB67] text-pure-black py-3 md:py-5 rounded-xl font-bold text-base md:text-xl shadow-[0_4px_20px_rgba(255,138,0,0.3)] hover:bg-[#FF9F2A] transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed mt-1 md:mt-4"
                 >
                     {loading ? 'Procesando...' : (isRegister ? 'Registrarme' : 'Iniciar Sesión')}
                 </button>
@@ -209,7 +209,7 @@ function UnifiedAuthForm() {
                     {isRegister ? '¿Ya tienes una cuenta?' : '¿No tienes cuenta?'}
                     <button
                         onClick={toggleMode}
-                        className="text-[#FF8A00] font-bold ml-1.5 hover:underline transition-all"
+                        className="text-[#E5CB67] font-bold ml-1.5 hover:underline transition-all"
                     >
                         {isRegister ? 'Inicia Sesión' : 'Regístrate aquí'}
                     </button>
@@ -223,9 +223,9 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-pure-black flex items-center justify-center relative overflow-hidden">
             {/* Background Ambience */}
-            <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[30%] bg-[#FF8A00]/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[30%] bg-[#E5CB67]/5 blur-[100px] rounded-full pointer-events-none" />
 
-            <Suspense fallback={<div className="text-[#FF8A00]">Cargando...</div>}>
+            <Suspense fallback={<div className="text-[#E5CB67]">Cargando...</div>}>
                 <UnifiedAuthForm />
             </Suspense>
         </div>

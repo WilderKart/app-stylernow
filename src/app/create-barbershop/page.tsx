@@ -81,7 +81,7 @@ export default function CreateBarbershopCredentials() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="barberia@ejemplo.com"
-                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                 </div>
@@ -93,7 +93,7 @@ export default function CreateBarbershopCredentials() {
                         value={phone}
                         onChange={(e) => formatPhoneNumber(e.target.value)}
                         placeholder="300 123 4567"
-                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-white placeholder-gray-600 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                 </div>
@@ -112,7 +112,7 @@ export default function CreateBarbershopCredentials() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#FF8A00] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10"
+                        className="w-full bg-[#E5CB67] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#E5CB67]/10"
                     >
                         {loading ? "Procesando..." : "Enviar códigos de verificación"}
                     </button>

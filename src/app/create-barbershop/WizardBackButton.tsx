@@ -40,7 +40,7 @@ export default function WizardBackButton() {
                 onClick={handleBack}
                 className="group flex items-center justify-center w-10 h-10 rounded-full 
                            bg-white/5 backdrop-blur-md border border-white/10 
-                           hover:bg-[#FF8A00] hover:border-[#FF8A00] transition-all duration-300
+                           hover:bg-[#E5CB67] hover:border-[#E5CB67] transition-all duration-300
                            active:scale-95 shadow-lg shadow-black/20"
                 aria-label="Volver"
             >

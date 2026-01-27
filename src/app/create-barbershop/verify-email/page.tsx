@@ -87,7 +87,7 @@ function VerifyEmailContent() {
                         onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
                         onPaste={handlePaste}
                         placeholder="00000000"
-                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-center text-2xl tracking-[0.5em] text-white placeholder-gray-700 focus:border-[#FF8A00] focus:outline-none transition-colors"
+                        className="w-full bg-[#121212] border border-gray-800 rounded-xl p-4 text-center text-2xl tracking-[0.5em] text-white placeholder-gray-700 focus:border-[#E5CB67] focus:outline-none transition-colors"
                         required
                     />
                     <p className="text-xs text-gray-500 text-center mt-1">
@@ -109,7 +109,7 @@ function VerifyEmailContent() {
                     <button
                         type="submit"
                         disabled={loading || otp.length !== 8}
-                        className="w-full bg-[#FF8A00] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10"
+                        className="w-full bg-[#E5CB67] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#E5CB67]/10"
                     >
                         {loading ? "Verificando..." : "Verificar correo"}
                     </button>

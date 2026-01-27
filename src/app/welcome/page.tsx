@@ -36,10 +36,10 @@ function WelcomeContent() {
                 <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full max-w-md mx-auto text-center">
                     {/* Icon */}
                     <div className="mb-8 relative">
-                        <div className="absolute inset-0 bg-[#FF8A00]/20 blur-2xl rounded-full animate-pulse" />
+                        <div className="absolute inset-0 bg-[#E5CB67]/20 blur-2xl rounded-full animate-pulse" />
                         <ShieldCheck
                             size={80}
-                            className="text-[#FF8A00] relative z-10 animate-[pulse_3s_ease-in-out_infinite]"
+                            className="text-[#E5CB67] relative z-10 animate-[pulse_3s_ease-in-out_infinite]"
                             strokeWidth={1}
                         />
                     </div>
@@ -59,7 +59,7 @@ function WelcomeContent() {
                         <span className="text-[10px] text-gray-500 font-medium tracking-[0.2em] uppercase">
                             Estatus
                         </span>
-                        <span className="text-[#FF8A00] font-bold text-sm tracking-widest uppercase glow-text">
+                        <span className="text-[#E5CB67] font-bold text-sm tracking-widest uppercase glow-text">
                             En Revisión
                         </span>
                     </div>
@@ -68,7 +68,7 @@ function WelcomeContent() {
                     <div className="animate-[fadeIn_1s_ease-in-out_3s_forwards] opacity-0">
                         <button
                             onClick={() => router.push('/dashboard')}
-                            className="text-gray-500 text-xs hover:text-[#FF8A00] transition-colors flex items-center gap-1 group"
+                            className="text-gray-500 text-xs hover:text-[#E5CB67] transition-colors flex items-center gap-1 group"
                         >
                             Configurar mi barbería mientras espero
                             <span className="group-hover:translate-x-1 transition-transform">-&gt;</span>

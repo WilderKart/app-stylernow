@@ -95,10 +95,10 @@ export default function CameraCapture({ onCapture, onClose, label, instruction }
                             {/* Focus Frame Overlay (ID Card Shape) */}
                             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                                 <div className="w-[85%] aspect-[1.586] border-2 border-white/30 rounded-xl relative">
-                                    <div className="absolute top-[-2px] left-[-2px] w-4 h-4 border-t-2 border-l-2 border-[#FF8A00]"></div>
-                                    <div className="absolute top-[-2px] right-[-2px] w-4 h-4 border-t-2 border-r-2 border-[#FF8A00]"></div>
-                                    <div className="absolute bottom-[-2px] left-[-2px] w-4 h-4 border-b-2 border-l-2 border-[#FF8A00]"></div>
-                                    <div className="absolute bottom-[-2px] right-[-2px] w-4 h-4 border-b-2 border-r-2 border-[#FF8A00]"></div>
+                                    <div className="absolute top-[-2px] left-[-2px] w-4 h-4 border-t-2 border-l-2 border-[#E5CB67]"></div>
+                                    <div className="absolute top-[-2px] right-[-2px] w-4 h-4 border-t-2 border-r-2 border-[#E5CB67]"></div>
+                                    <div className="absolute bottom-[-2px] left-[-2px] w-4 h-4 border-b-2 border-l-2 border-[#E5CB67]"></div>
+                                    <div className="absolute bottom-[-2px] right-[-2px] w-4 h-4 border-b-2 border-r-2 border-[#E5CB67]"></div>
                                 </div>
                             </div>
                         </>
@@ -106,7 +106,7 @@ export default function CameraCapture({ onCapture, onClose, label, instruction }
                         <div className="relative w-full h-full">
                             <img src={imgSrc} alt="Capture" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center flex-col gap-2">
-                                <CheckCircle size={48} className="text-[#FF8A00]" />
+                                <CheckCircle size={48} className="text-[#E5CB67]" />
                                 <span className="text-white font-bold">¡Foto Capturada!</span>
                             </div>
                         </div>
@@ -120,9 +120,9 @@ export default function CameraCapture({ onCapture, onClose, label, instruction }
                     {!imgSrc ? (
                         <button
                             onClick={capture}
-                            className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-all border-4 border-[#FF8A00]/20"
+                            className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-all border-4 border-[#E5CB67]/20"
                         >
-                            <div className="w-16 h-16 bg-[#FF8A00] rounded-full border-2 border-white"></div>
+                            <div className="w-16 h-16 bg-[#E5CB67] rounded-full border-2 border-white"></div>
                         </button>
                     ) : (
                         <>
@@ -135,7 +135,7 @@ export default function CameraCapture({ onCapture, onClose, label, instruction }
                             </button>
                             <button
                                 onClick={handleConfirm}
-                                className="flex items-center gap-2 px-6 py-3 bg-[#FF8A00] rounded-full text-black font-bold hover:bg-[#FF9F2A]"
+                                className="flex items-center gap-2 px-6 py-3 bg-[#E5CB67] rounded-full text-black font-bold hover:bg-[#FF9F2A]"
                             >
                                 <CheckCircle size={18} />
                                 Confirmar

@@ -64,7 +64,7 @@ const PremiumInput = ({
 }: any) => (
     <div className={`flex flex-col gap-2 group ${className}`}>
         <label className="text-sm font-medium text-gray-400 ml-1 tracking-wide group-focus-within:text-[#E5CB67] transition-colors duration-300">
-            {label} {required && <span className="text-[#FF8A00]">*</span>}
+            {label} {required && <span className="text-[#E5CB67]">*</span>}
         </label>
         <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400/70 transition-colors duration-300 group-focus-within:text-[#E5CB67]">
@@ -98,7 +98,7 @@ const PremiumSelect = ({
 }: any) => (
     <div className="flex flex-col gap-2 group">
         <label className="text-sm font-medium text-gray-400 ml-1 tracking-wide group-focus-within:text-[#E5CB67] transition-colors duration-300">
-            {label} {required && <span className="text-[#FF8A00]">*</span>}
+            {label} {required && <span className="text-[#E5CB67]">*</span>}
         </label>
         <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400/70 transition-colors duration-300 group-focus-within:text-[#E5CB67]">
@@ -169,7 +169,7 @@ const CityCombobox = ({ countryCode, value, onChange }: { countryCode: string, v
     return (
         <div className="flex flex-col gap-2 group relative" ref={containerRef}>
             <label className="text-sm font-medium text-gray-400 ml-1 tracking-wide group-focus-within:text-[#E5CB67] transition-colors duration-300">
-                Ciudad <span className="text-[#FF8A00]">*</span>
+                Ciudad <span className="text-[#E5CB67]">*</span>
             </label>
             <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400/70 transition-colors duration-300 group-focus-within:text-[#E5CB67]">
@@ -379,7 +379,7 @@ export default function BusinessInfoClient({ initialData }: BusinessInfoClientPr
                     </div>
 
                     {formData.business_type === 'JURIDICA' && (
-                        <p className="text-xs text-[#FF8A00]/80 -mt-2 ml-1">
+                        <p className="text-xs text-[#E5CB67]/80 -mt-2 ml-1">
                             * Incluye el dígito de verificación sin guiones
                         </p>
                     )}
@@ -396,7 +396,7 @@ export default function BusinessInfoClient({ initialData }: BusinessInfoClientPr
                         type="submit"
                         disabled={loading}
                         className="mx-auto mt-10 w-16 h-16 rounded-full 
-                                   bg-[#FF8A00] text-black shadow-[0_4px_20px_rgba(255,138,0,0.4)]
+                                   bg-[#E5CB67] text-black shadow-[0_4px_20px_rgba(255,138,0,0.4)]
                                    flex items-center justify-center
                                    hover:scale-105 active:scale-95 transition-all duration-300
                                    disabled:opacity-70 disabled:scale-100 disabled:cursor-not-allowed"

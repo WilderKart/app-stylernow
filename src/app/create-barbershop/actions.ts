@@ -48,7 +48,7 @@ type ActionContext = {
     supabase: any;
 };
 
-async function secureAction(
+export async function secureAction(
     actionName: string,
     requiredStep: number, // The step that MUST be active (e.g. 1 to save step 1) or 0 for init
     handler: (ctx: ActionContext) => Promise<any>

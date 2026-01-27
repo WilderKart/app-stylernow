@@ -81,7 +81,7 @@ export default function SplashPage() {
 
       <div className={`absolute bottom-6 z-30 w-full text-center ${lexend.className}`}>
         <p className="text-sm font-bold tracking-widest uppercase">
-          <span className="text-white">Powered by</span> <span className="text-[#FF8A00]">Stylernow</span>
+          <span className="text-white">Powered by</span> <span className="text-[#E5CB67]">Stylernow</span>
         </p>
       </div>
 
@@ -91,13 +91,13 @@ export default function SplashPage() {
         className="absolute bottom-20 right-6 z-50 group"
         aria-label="Continuar"
       >
-        <div className="relative flex items-center justify-center w-14 h-14 rounded-full border border-[#FF8A00]/30 bg-black/40 backdrop-blur-sm transition-all duration-300 group-hover:bg-[#FF8A00]/10 group-hover:border-[#FF8A00]">
+        <div className="relative flex items-center justify-center w-14 h-14 rounded-full border border-[#E5CB67]/30 bg-black/40 backdrop-blur-sm transition-all duration-300 group-hover:bg-[#E5CB67]/10 group-hover:border-[#E5CB67]">
           {/* Heartbeat Pulse Effect - CSS Keyframe is cleanest for specific "heartbeat" */}
-          <div className="absolute inset-0 rounded-full border border-[#FF8A00]/50 opacity-0 group-hover:opacity-100" style={{ animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }} />
+          <div className="absolute inset-0 rounded-full border border-[#E5CB67]/50 opacity-0 group-hover:opacity-100" style={{ animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }} />
 
           {/* Arrow Icon with Heartbeat Scaling */}
           <svg
-            className="w-6 h-6 text-[#FF8A00]"
+            className="w-6 h-6 text-[#E5CB67]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

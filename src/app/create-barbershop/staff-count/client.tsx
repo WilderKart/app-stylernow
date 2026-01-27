@@ -43,7 +43,7 @@ export default function StaffCountClient({ initialCount }: { initialCount: numbe
                 <div className="w-8 h-1 bg-gray-600 rounded-full"></div>
                 <div className="w-8 h-1 bg-gray-600 rounded-full"></div>
                 <div className="w-8 h-1 bg-gray-600 rounded-full"></div>
-                <div className="w-8 h-1 bg-[#FF8A00] rounded-full"></div>
+                <div className="w-8 h-1 bg-[#E5CB67] rounded-full"></div>
             </div>
 
             <div className="text-center mb-12">
@@ -62,7 +62,7 @@ export default function StaffCountClient({ initialCount }: { initialCount: numbe
                     <button
                         type="button"
                         onClick={decrement}
-                        className="w-16 h-16 rounded-full bg-[#1A1A1A] border border-gray-700 flex items-center justify-center text-white hover:border-[#FF8A00] hover:text-[#FF8A00] transition-colors active:scale-95"
+                        className="w-16 h-16 rounded-full bg-[#1A1A1A] border border-gray-700 flex items-center justify-center text-white hover:border-[#E5CB67] hover:text-[#E5CB67] transition-colors active:scale-95"
                     >
                         <Minus size={32} />
                     </button>
@@ -75,13 +75,13 @@ export default function StaffCountClient({ initialCount }: { initialCount: numbe
                     <button
                         type="button"
                         onClick={increment}
-                        className="w-16 h-16 rounded-full bg-[#1A1A1A] border border-gray-700 flex items-center justify-center text-white hover:border-[#FF8A00] hover:text-[#FF8A00] transition-colors active:scale-95"
+                        className="w-16 h-16 rounded-full bg-[#1A1A1A] border border-gray-700 flex items-center justify-center text-white hover:border-[#E5CB67] hover:text-[#E5CB67] transition-colors active:scale-95"
                     >
                         <Plus size={32} />
                     </button>
                 </div>
 
-                <div className="p-4 bg-[#FF8A00]/10 border border-[#FF8A00]/20 rounded-xl text-[#FF8A00] text-xs text-center max-w-xs">
+                <div className="p-4 bg-[#E5CB67]/10 border border-[#E5CB67]/20 rounded-xl text-[#E5CB67] text-xs text-center max-w-xs">
                     <Users size={16} className="inline-block mr-2 mb-1" />
                     Podrás agregar los perfiles y fotos de tu equipo más adelante en el panel de administración.
                 </div>
@@ -103,7 +103,7 @@ export default function StaffCountClient({ initialCount }: { initialCount: numbe
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-2/3 bg-[#FF8A00] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#FF8A00]/10"
+                        className="w-2/3 bg-[#E5CB67] text-black py-4 rounded-xl font-bold text-lg hover:bg-[#FF9F2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#E5CB67]/10"
                     >
                         {loading ? "Guardando..." : "Continuar"}
                     </button>

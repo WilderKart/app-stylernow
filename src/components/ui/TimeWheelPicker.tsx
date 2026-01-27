@@ -39,7 +39,7 @@ export default function TimeWheelPicker({ value, onChange }: TimeWheelPickerProp
     return (
         <div className="flex bg-[#1A1A1A] rounded-xl border border-gray-800 h-32 relative overflow-hidden text-center select-none">
             {/* Selection Highlight */}
-            <div className="absolute top-1/2 left-0 w-full h-10 -translate-y-1/2 bg-[#FF8A00]/10 border-t border-b border-[#FF8A00]/30 pointer-events-none z-0" />
+            <div className="absolute top-1/2 left-0 w-full h-10 -translate-y-1/2 bg-[#E5CB67]/10 border-t border-b border-[#E5CB67]/30 pointer-events-none z-0" />
 
             {/* Hours */}
             <div className="flex-1 overflow-y-scroll no-scrollbar snap-y snap-mandatory py-11 relative z-10 text-white">
@@ -47,7 +47,7 @@ export default function TimeWheelPicker({ value, onChange }: TimeWheelPickerProp
                     <div
                         key={h}
                         onClick={() => handleChange(h, minute, period)}
-                        className={`h-10 flex items-center justify-center snap-center cursor-pointer transition-colors ${hour === h ? 'text-[#FF8A00] font-bold text-xl' : 'text-gray-500 text-sm'}`}
+                        className={`h-10 flex items-center justify-center snap-center cursor-pointer transition-colors ${hour === h ? 'text-[#E5CB67] font-bold text-xl' : 'text-gray-500 text-sm'}`}
                     >
                         {h}
                     </div>
@@ -62,7 +62,7 @@ export default function TimeWheelPicker({ value, onChange }: TimeWheelPickerProp
                     <div
                         key={m}
                         onClick={() => handleChange(hour, m, period)}
-                        className={`h-10 flex items-center justify-center snap-center cursor-pointer transition-colors ${minute === m ? 'text-[#FF8A00] font-bold text-xl' : 'text-gray-500 text-sm'}`}
+                        className={`h-10 flex items-center justify-center snap-center cursor-pointer transition-colors ${minute === m ? 'text-[#E5CB67] font-bold text-xl' : 'text-gray-500 text-sm'}`}
                     >
                         {m}
                     </div>

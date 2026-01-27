@@ -39,7 +39,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                 {initialServices.length > 0 && (
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-[#FF8A00] text-black px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#FF9F2A] transition-colors flex items-center gap-2"
+                        className="bg-[#E5CB67] text-black px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#FF9F2A] transition-colors flex items-center gap-2"
                     >
                         <Plus size={18} />
                         Nuevo Servicio
@@ -51,17 +51,17 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                 // Empty State
                 <div className="flex flex-col items-center justify-center py-20 bg-[#111] border border-gray-800 rounded-2xl relative overflow-hidden">
                     {/* Spotlight */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#FF8A00]/10 blur-[80px] rounded-full pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#E5CB67]/10 blur-[80px] rounded-full pointer-events-none" />
 
                     <div className="bg-[#1A1A1A] p-6 rounded-full mb-6 relative z-10 border border-white/5 shadow-xl">
-                        <Scissors size={48} className="text-[#FF8A00]" />
+                        <Scissors size={48} className="text-[#E5CB67]" />
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2 relative z-10">Define tu estilo</h3>
                     <p className="text-gray-500 text-sm mb-8 relative z-10">Crea tu primer servicio para empezar.</p>
 
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-[#FF8A00] text-black px-6 py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-all shadow-lg shadow-[#FF8A00]/20 relative z-10 flex items-center gap-2"
+                        className="bg-[#E5CB67] text-black px-6 py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-all shadow-lg shadow-[#E5CB67]/20 relative z-10 flex items-center gap-2"
                     >
                         <Plus size={18} />
                         Crear Servicio
@@ -71,7 +71,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                 // List
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {initialServices.map((service) => (
-                        <div key={service.id} className="bg-[#111] border border-gray-800 p-5 rounded-xl hover:border-[#FF8A00]/50 transition-colors group relative overflow-hidden">
+                        <div key={service.id} className="bg-[#111] border border-gray-800 p-5 rounded-xl hover:border-[#E5CB67]/50 transition-colors group relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                 {/* Actions placeholder */}
                             </div>
@@ -98,7 +98,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
                             <div>
                                 <label className="text-xs text-gray-400 font-medium ml-1">Nombre</label>
-                                <input name="name" placeholder="Ej: Corte Clásico" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1" required />
+                                <input name="name" placeholder="Ej: Corte Clásico" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1" required />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -106,12 +106,12 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                                     <label className="text-xs text-gray-400 font-medium ml-1">Precio</label>
                                     <div className="relative mt-1">
                                         <span className="absolute left-3 top-3 text-gray-500">$</span>
-                                        <input name="price" type="number" placeholder="0.00" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 pl-7 text-white focus:border-[#FF8A00] outline-none" required />
+                                        <input name="price" type="number" placeholder="0.00" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 pl-7 text-white focus:border-[#E5CB67] outline-none" required />
                                     </div>
                                 </div>
                                 <div>
                                     <label className="text-xs text-gray-400 font-medium ml-1">Duración (min)</label>
-                                    <select name="duration_min" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1">
+                                    <select name="duration_min" className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1">
                                         <option value="15">15 min</option>
                                         <option value="30">30 min</option>
                                         <option value="45">45 min</option>
@@ -122,7 +122,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
 
                             <div>
                                 <label className="text-xs text-gray-400 font-medium ml-1">Descripción (Opcional)</label>
-                                <textarea name="description" placeholder="Breve detalle..." className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#FF8A00] outline-none mt-1 h-20 resize-none" />
+                                <textarea name="description" placeholder="Breve detalle..." className="w-full bg-[#0A0A0A] border border-gray-800 rounded-lg p-3 text-white focus:border-[#E5CB67] outline-none mt-1 h-20 resize-none" />
                             </div>
 
                             {error && <p className="text-red-400 text-xs text-center">{error}</p>}
@@ -130,7 +130,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="bg-[#FF8A00] text-black w-full py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-colors mt-2 flex justify-center items-center gap-2 disabled:opacity-50"
+                                className="bg-[#E5CB67] text-black w-full py-3 rounded-xl font-bold hover:bg-[#FF9F2A] transition-colors mt-2 flex justify-center items-center gap-2 disabled:opacity-50"
                             >
                                 {loading && <Loader2 size={18} className="animate-spin" />}
                                 {loading ? "Guardando..." : "Guardar Servicio"}
