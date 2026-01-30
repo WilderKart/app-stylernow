@@ -588,7 +588,7 @@ export default function VisualIdentityClient({
 
             // DATA TRANSFORMATION: UI Blocks -> Backend Strict Array
             const backendSchedule = transformSchedule(schedules);
-            formData.append('schedules', JSON.stringify(backendSchedule));
+            formData.append('opening_hours', JSON.stringify(backendSchedule));
 
             // Execute Server Action
             const result = await saveVisualIdentity(formData);

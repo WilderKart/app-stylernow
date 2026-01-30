@@ -391,3 +391,106 @@ export async function submitForReview(barbershopId: string) {
         return { success: true };
     });
 }
+
+// Step 5: Services (Toggle & Custom)
+
+import { DEFAULT_SERVICES } from '@/lib/data/services';
+
+const toggleServiceSchema = z.object({
+    serviceId: z.string(), // slug (e.g. 'corte-clasico') or UUID for custom
+    isActive: z.boolean(),
+    isCustom: z.boolean().optional()
+});
+
+const saveCustomServiceSchema = z.object({
+    id: z.string().optional(), // If editing
+    name: z.string().min(3, "Nombre muy corto"),
+    category: z.enum(['BARBERSHOP', 'MANICURE', 'OTHER']),
+    price: z.number().min(0),
+    duration: z.number().min(5),
+    image_url: z.string().optional()
+});
+
+export async function toggleService(serviceId: string, isActive: boolean, isCustom: boolean = false) {
+    return secureAction('TOGGLE_SERVICE', 4, async ({ user, supabase }) => {
+        // 1. Get Business
+        const { data: shop } = await supabase.from('barbershops').select('id').eq('owner_id', user.id).single();
+        if (!shop) return { error: "Barbería no encontrada" };
+
+        if (!isCustom) {
+            // Logic for Default Services (Copy-on-Write)
+            const defService = DEFAULT_SERVICES.find(s => s.id === serviceId);
+            if (!defService) return { error: "Servicio inválido" };
+
+            // Check if already exists in DB (instantiated)
+            const { data: existing } = await supabase
+                .from('services')
+                .select('id')
+                .eq('business_id', shop.id)
+                .eq('name', defService.name) // Matching by name as ID is internal slug
+                .single();
+
+            if (existing) {
+                // Update
+                await supabase.from('services').update({ is_active: isActive }).eq('id', existing.id);
+            } else if (isActive) {
+                // Insert (Instantiate)
+                await supabase.from('services').insert({
+                    business_id: shop.id,
+                    name: defService.name,
+                    category: defService.category,
+                    price: defService.defaultPrice,
+                    duration: defService.defaultDuration,
+                    is_active: true,
+                    image_url: defService.imageName // Just the filename, client/server knows how to resolve
+                });
+            }
+        } else {
+            // Logic for Custom Services (Direct Update)
+            await supabase.from('services').update({ is_active: isActive }).eq('id', serviceId).eq('business_id', shop.id);
+        }
+
+        return { success: true };
+    });
+}
+
+export async function saveCustomService(data: any) {
+    return secureAction('SAVE_CUSTOM_SERVICE', 4, async ({ user, supabase }) => {
+        const val = saveCustomServiceSchema.safeParse(data);
+        if (!val.success) return { error: val.error.issues[0]?.message };
+
+        const { data: shop } = await supabase.from('barbershops').select('id').eq('owner_id', user.id).single();
+        if (!shop) return { error: "Error de negocio" };
+
+        if (data.id) {
+            // Update
+            const { error } = await supabase.from('services')
+                .update({ ...val.data, is_active: true })
+                .eq('id', data.id)
+                .eq('business_id', shop.id);
+            if (error) throw error;
+        } else {
+            // Create
+            const { error } = await supabase.from('services').insert({
+                business_id: shop.id,
+                ...val.data,
+                is_active: true
+            });
+            if (error) throw error;
+        }
+
+        return { success: true };
+    });
+}
+
+export async function deleteCustomService(serviceId: string) {
+    return secureAction('DELETE_SERVICE', 4, async ({ user, supabase }) => {
+        const { data: shop } = await supabase.from('barbershops').select('id').eq('owner_id', user.id).single();
+        if (!shop) throw new Error("Acceso denegado");
+
+        // RLS prevents deleting others, but good to be explicit
+        const { error } = await supabase.from('services').delete().eq('id', serviceId).eq('business_id', shop.id);
+        if (error) throw error;
+        return { success: true };
+    });
+}
